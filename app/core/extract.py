@@ -15,9 +15,10 @@ def get_data_model_table(data_model:DataModel, table_name:str) -> DataModelTable
     else:
         return table[0]
 
-def extract_data(data_model_table:DataModelTable) -> DataFrame:
+def extract_data(data_model_table:DataModelTable, additional_columns:list[PQLColumn]=[], filters:list[PQLFilter]=[]) -> DataFrame:
     columns = data_model_table.get_columns()
-    query = build_pql_query(columns) #TODO: Add filters
+    columns.extend(additional_columns)
+    query = build_pql_query(columns, filters)
     return pql.DataFrame.from_pql(
         query=query
     ).to_pandas()
