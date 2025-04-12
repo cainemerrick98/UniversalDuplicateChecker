@@ -22,10 +22,5 @@ object_df.set_index('ID')
 #Set of object ids
 object_ids = set(object_df['ID'])
 
-"""
-Algorithm
-set groups = empty[]
-loop through objects
-if object does not match any groups based on the criteria then 
-"""
+
 
