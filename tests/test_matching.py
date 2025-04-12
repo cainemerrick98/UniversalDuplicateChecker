@@ -112,3 +112,13 @@ def test_create_groups_graph():
     assert len(groups_graph.keys()) == 1
     assert groups_graph.get('a')
     assert groups_graph['a'][0] == ('c', 'Similar VendorName')
+
+
+def test_parse_groups_graph():
+    
+    groups_graph = matching.create_groups_graph(invoice_df, invoice_columns, 1)
+    duplicate_groups = matching.parse_groups_graph(groups_graph)
+
+    assert len(duplicate_groups) == 1
+    assert duplicate_groups[0][0] == ['a', 'c']
+    assert duplicate_groups[0][1] == 'Similar VendorName'

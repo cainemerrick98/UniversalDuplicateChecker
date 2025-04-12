@@ -1,6 +1,6 @@
 from pandas import DataFrame, Series
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype, is_string_dtype
-from collections import defaultdict 
+from collections import defaultdict, deque
 from typing import Callable
 import datetime as dt
 
@@ -168,6 +168,57 @@ def create_groups_graph(object_df:DataFrame, columns:list[str], max_non_exact_ma
                 groups_graph[object_a['ID']].append((object_b['ID'], relationship))
     
     return groups_graph
+
+def parse_groups_graph(groups_graph:dict)->list[tuple]:
+    """
+    The function transform the groups graph into sets of connected ids and the group relationship type.
+    Each of these sets can be considered as a duplicate group.
+    We search for connected sets of objects using BFS, removing the nodes from the ids
+    to search as we find them.
+    """
+    duplicate_groups = []
+    ids_to_search = deque(groups_graph.keys())
+    ids_searched = set()
+
+    while ids_to_search:
+
+        entry_point = ids_to_search.popleft()
+        if entry_point in ids_searched:
+            continue
+
+        ids_searched.add(entry_point)
+        connected_objects = deque(groups_graph[entry_point])
+
+        relationships = set()
+        group_object_ids = [entry_point]
+        while connected_objects:
+            object_id, relationship = connected_objects.popleft()
+            
+            relationships.add(relationship)
+            group_object_ids.append(object_id)
+
+            ids_searched.add(object_id)
+            
+            connected_objects.extend(groups_graph[object_id])
+        
+        if len(relationships) == 1:
+            relationship_type = relationships.pop()
+        
+        elif len(relationships) == 2:
+            relationships.pop()
+            relationship_type = relationships.pop()
+
+        else:
+            relationship_type = 'Multiple'
+
+        duplicate_groups.append((group_object_ids, relationship_type))
+    
+    return duplicate_groups
+            
+
+
+
+
 
 
 
