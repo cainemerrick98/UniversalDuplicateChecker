@@ -15,7 +15,14 @@ class DataExtraction:
 
 class DuplicateLogic:
     COLUMNS = [] #These are the columns the matching algorithm should use to create duplicate groups
-    MAX_NON_EXACT_MATCHES = 1
+    #TODO: Add default patters
+    SEARCH_PATTERNS = {
+        # Note an object can be part of more than one groups
+        "EXACT_MATCH":{
+            ... 
+        }
+    }
+    
     
 
 
