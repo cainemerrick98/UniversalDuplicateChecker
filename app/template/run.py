@@ -19,10 +19,15 @@ object_df = extract_data(object_table)
 
 #Loop through patterns - finding groups
 duplicate_checker = DuplicateChecker(object_df)
+found_groups = set()
+found_groups_with_pattern_name = set()
 for pattern_name, pattern in DuplicateLogic.SEARCH_PATTERNS.items():
     groups = duplicate_checker.find_duplicates(pattern_name, pattern)
-
-    #Some logic to update a groups set. -i.e. what if we have foud the all candidates linked together before
+    for group in groups:
+        if group not in found_groups:
+            found_groups.add(group)
+            found_groups_with_pattern_name.add((group, pattern_name))
+    
     
     
 
