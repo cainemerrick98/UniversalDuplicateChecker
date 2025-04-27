@@ -15,7 +15,7 @@ object_table = get_data_model_table(data_model, DataExtraction.OBJECT_TABLE_NAME
 
 #Get the data
 group_object_df = extract_data(group_object_table)
-object_df = extract_data(object_table)
+object_df = extract_data(object_table)#TODO: object df index must be ID column for script to work correctly
 
 #Loop through patterns - finding groups
 duplicate_checker = DuplicateChecker(object_df)

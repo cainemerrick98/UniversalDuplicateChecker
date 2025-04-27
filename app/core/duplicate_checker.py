@@ -1,6 +1,6 @@
 import networkx as nx
 from recordlinkage.base import BaseCompareFeature
-from recordlinkage.compare import Exact
+from app.core.comparers import ExactMatch
 from recordlinkage import Compare, Index
 from pandas import DataFrame, MultiIndex
 
@@ -20,7 +20,7 @@ class DuplicateChecker():
         self.df = df
         
     
-    def find_duplicates(self, pattern_name:str, pattern:list[BaseCompareFeature])->list[frozenset]:
+    def find_duplicates(self, pattern:list[BaseCompareFeature])->list[frozenset]:
         candidate_links = self._create_candidate_links(pattern)
         identified_duplicates = self._find_duplicate_pairs(candidate_links, pattern)
         groups = self._create_duplicate_groups(identified_duplicates)
@@ -33,7 +33,7 @@ class DuplicateChecker():
         """
         index = Index()
         for comparer in pattern:
-            if isinstance(comparer, Exact):
+            if isinstance(comparer, ExactMatch):
                 index.block(comparer.column) #TODO: potential bug here as parent doesn't enforce a column attribute error 
         
         candidate_links = index.index(self.df)
@@ -47,7 +47,7 @@ class DuplicateChecker():
         
         features = compare.compute(candidate_links, self.df)
         identified_duplicates = features[features.sum(axis=1) == len(features.columns)].index.to_list() #All features are 1
-        
+
         return identified_duplicates
 
     def _create_duplicate_groups(self, identified_duplicates:list[tuple]):

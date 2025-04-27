@@ -7,13 +7,16 @@ from pandas import Series
 import numpy as np
 import regex as re
 
+class ExactMatch(Exact):
+    def __init__(self, column:str):
+        super().__init__(column, column, label=column)
+        self.column = column
 
 class DateFuzzy(BaseCompareFeature):
     def __init__(self, column, max_day_diff:int=7):
-        super().__init__(column, column)
+        super().__init__(column, column, label=column)
         self.max_day_diff = max_day_diff
-    
-    
+      
     def _compute_vectorized(self, s_left:Series, s_right:Series):
         if s_left.dtype != "datetime64[ns]" or s_right.dtype != "datetime64[ns]":
             raise ValueError('Non datetime series passed to date fuzzy match')
@@ -31,9 +34,10 @@ class DateFuzzy(BaseCompareFeature):
         return c
 
 class StringFuzzy(String):
-    def __init__(self, column:str, prefixes_to_remove:list[str]=[], suffixes_to_remove:list[str]=[]):
-        super().__init__(column, column, threshold=0.9)
-        self.threshold = 0.9
+    #TODO: look how the parent uses the threshold variable
+    def __init__(self, column:str, prefixes_to_remove:list[str]=[], suffixes_to_remove:list[str]=[], threshold:float=0.9):
+        super().__init__(column, column, threshold=threshold, label=column)
+        self.threshold = threshold
         self.prefixes_to_remove = prefixes_to_remove
         self.suffixes_to_remove = suffixes_to_remove
 
@@ -49,14 +53,15 @@ class StringFuzzy(String):
             s = s.str.removeprefix(prefix)
         for suffix in self.suffixes_to_remove:
             s = s.str.removesuffix(suffix)
-    
-        s = s.apply(lambda x: re.sub(r'[^a-zA-Z0-9]', '', x))
+        
+        s = s.str.lower()
+        s = s.apply(lambda x: re.sub(r'[^a-zA-Z0-9]', '', x) if isinstance(x, str)  else x)
 
         return s
 
 class NumericFuzzy(BaseCompareFeature):
     def __init__(self, column:str):
-        super().__init__(column, column)
+        super().__init__(column, column, label=column)
 
     def _compute_vectorized(self, s_left:Series, s_right:Series):
         c = np.zeros(shape=(1, len(s_left)))
