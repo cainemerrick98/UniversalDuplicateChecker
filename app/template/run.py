@@ -1,7 +1,8 @@
 # Skeleton code for logic
-from settings import CelonisConnection, DataExtraction, MATCH_COLUMNS
+from settings import CelonisConnection, DataExtraction, DuplicateLogic
 from core import connect
 from core.extract import get_data_model_table, extract_data
+from core.duplicate_checker import DuplicateChecker
 from pycelonis.config import Config
 
 #Establish connection and get the datamodel
@@ -16,11 +17,14 @@ object_table = get_data_model_table(data_model, DataExtraction.OBJECT_TABLE_NAME
 group_object_df = extract_data(group_object_table)
 object_df = extract_data(object_table)
 
-#Set the index as the ID
-object_df.set_index('ID')
+#Loop through patterns - finding groups
+duplicate_checker = DuplicateChecker(object_df)
+for pattern_name, pattern in DuplicateLogic.SEARCH_PATTERNS.items():
+    groups = duplicate_checker.find_duplicates(pattern_name, pattern)
 
-#Set of object ids
-object_ids = set(object_df['ID'])
+    #Some logic to update a groups set. -i.e. what if we have foud the all candidates linked together before
+    
+    
 
 
 

@@ -36,7 +36,8 @@ class StringFuzzy(String):
         self.threshold = 0.9
         self.prefixes_to_remove = prefixes_to_remove
         self.suffixes_to_remove = suffixes_to_remove
-    
+
+    #TODO: you dont need to check the threshold here    
     def _compute_vectorized(self, s_left, s_right):
         s_left = self._clean_strings(s_left)
         s_right = self._clean_strings(s_right)

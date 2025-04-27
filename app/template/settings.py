@@ -18,9 +18,7 @@ class DuplicateLogic:
     #TODO: Add default patters
     SEARCH_PATTERNS = {
         # Note an object can be part of more than one groups
-        "EXACT_MATCH":{
-            ... 
-        }
+        "EXACT_MATCH":[...],
     }
     
     
