@@ -23,7 +23,7 @@ def extract_data(data_model_table:DataModelTable, additional_columns:list[PQLCol
         query=query
     ).to_pandas()
     
-#TODO: handle table alias when building query
+    
 def build_pql_query(columns:list[PQLColumn|DataModelTableColumn], filters:list[PQLFilter]=[]):
     query = PQL()
     for col in columns:
@@ -37,5 +37,5 @@ def build_pql_query(columns:list[PQLColumn|DataModelTableColumn], filters:list[P
     return query
     
 def data_model_table_column_to_pql_column(data_model_table_column:DataModelTableColumn)->PQLColumn:
-    query = f'"{data_model_table_column.table_name}"."{data_model_table_column.name}"'
+    query = f'"{data_model_table_column.table_alias or data_model_table_column.table_name}"."{data_model_table_column.name}"'
     return PQLColumn(name=data_model_table_column.name, query=query)

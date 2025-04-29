@@ -7,6 +7,7 @@ class Table(BaseModel):
     name: str
 
 class DataModelTableColumn(BaseModel):
+    table_alias:str|None
     table_name:str
     name:str
 
@@ -33,8 +34,16 @@ def test_extract_table_failure(mocker):
         table = extract.get_data_model_table(mock_data_model, 'table_3')
 
 def test_data_model_table_column_to_pql_column():
-    data_model_table_column = DataModelTableColumn(table_name="Table1", name="Column1")
+    data_model_table_column = DataModelTableColumn(table_alias=None, table_name="Table1", name="Column1")
     expected_pql_column = PQLColumn(name="Column1", query='"Table1"."Column1"')
+    output_pql_column = extract.data_model_table_column_to_pql_column(data_model_table_column)
+    
+    assert expected_pql_column.name == output_pql_column.name
+    assert expected_pql_column.query == output_pql_column.query
+
+def test_data_model_table_column_to_pql_column_with_alias():
+    data_model_table_column = DataModelTableColumn(table_alias='T1', table_name="Table1", name="Column1")
+    expected_pql_column = PQLColumn(name="Column1", query='"T1"."Column1"')
     output_pql_column = extract.data_model_table_column_to_pql_column(data_model_table_column)
     
     assert expected_pql_column.name == output_pql_column.name
@@ -64,7 +73,7 @@ def test_build_pql_query_with_data_model_table_column(mocker):
     columns = [
         PQLColumn(name='column1', query='"Table"."Column1"'),
         PQLColumn(name='column2', query='"Table"."Column2"'),
-        DataModelTableColumn(table_name="Table1", name="Column1")
+        DataModelTableColumn(table_alias=None, table_name="Table1", name="Column1")
     ]
     filters = [
         PQLFilter(query='FILTER "Table"."Column1">10')
