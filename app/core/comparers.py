@@ -7,6 +7,8 @@ from pandas import Series
 import numpy as np
 import regex as re
 
+#TODO: Add Different Comparer
+
 class ExactMatch(Exact):
     def __init__(self, column:str):
         super().__init__(column, column, label=column)
