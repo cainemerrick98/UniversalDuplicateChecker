@@ -48,6 +48,7 @@ class StringFuzzy(String):
         c = super()._compute_vectorized(s_left, s_right)
         return (c >= self.threshold).to_numpy(dtype=np.int64)
     
+    #TODO: data preprocessing should happen before comparing (maybe move to a seperate module)
     def _clean_strings(self, s:Series):
         for prefix in self.prefixes_to_remove:
             s = s.str.removeprefix(prefix)
