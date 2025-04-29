@@ -3,7 +3,8 @@ from settings import CelonisConnection, DataExtraction, DuplicateLogic
 from core import connect
 from core.extract import get_data_model_table, extract_data
 from core.duplicate_checker import DuplicateChecker
-from pycelonis.config import Config
+import uuid
+
 
 #Establish connection and get the datamodel
 celonis = connect.connect(CelonisConnection.CELONIS_BASE_URL, CelonisConnection.CELONIS_API_TOKEN, CelonisConnection.CELONIS_APP_KEY)
@@ -27,7 +28,10 @@ for pattern_name, pattern in DuplicateLogic.SEARCH_PATTERNS.items():
     for group in groups:
         if group not in found_groups:
             found_groups.add(group)
-            found_groups_with_pattern_name.add((group, pattern_name))
+            found_groups_with_pattern_name.add((group, pattern_name, uuid.uuid4())) #TODO ensure this is always unique as it will be object ID
+            
+    
+
     
     
     
