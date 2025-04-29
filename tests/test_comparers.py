@@ -40,7 +40,11 @@ def test_string_fuzzy_clean_string():
     for suf in ts.company_suffixes:
         assert all([~clean_strings[i].endswith(suf) for i in range(len(clean_strings))])
     
+def test_numeric_fuzzy_within_threshold():
+    numeric_fuzzy = comparers.NumericFuzzy('any', 100)
+    c = numeric_fuzzy._compute_vectorized(ts.within_100_of_each_other_left, ts.within_100_of_each_other_right)
 
+    assert all(c == 1)
 
     
 

@@ -63,8 +63,9 @@ class StringFuzzy(String):
         return s
 
 class NumericFuzzy(BaseCompareFeature):
-    def __init__(self, column:str):
+    def __init__(self, column:str, max_value_diff:float=0):
         super().__init__(column, column, label=column)
+        self.max_value_diff = max_value_diff
 
     def _compute_vectorized(self, s_left:Series, s_right:Series):
         c = np.zeros(shape=(1, len(s_left)))
@@ -72,6 +73,8 @@ class NumericFuzzy(BaseCompareFeature):
         #Exact match
         c[s_left == s_right] = 1
 
+        #Within Value Threshold
+        c[(s_left - s_right).abs() < self.max_value_diff]
         #TODO: Add funcs for fuzzy match
 
         return c

@@ -44,4 +44,10 @@ company_names_left, company_names_right = get_left_right_series(
     )
 )
 
-
+#Numeric Series
+within_100_of_each_other_left, within_100_of_each_other_right = get_left_right_series(
+    Series(
+        name='Values',
+        data=[random.randint(100, 230)]
+    )
+) 
